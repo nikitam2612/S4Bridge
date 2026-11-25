@@ -11,6 +11,11 @@ jobs:
   quality-and-tests:
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_URL: "sqlite+pysqlite:///:memory:"
+      MONGODB_URL: "mongodb://localhost:27017"
+      MONGODB_DATABASE: "s4bridge_test"
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
