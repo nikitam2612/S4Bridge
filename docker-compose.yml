@@ -1,0 +1,39 @@
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: s4bridge-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: s4bridge
+      POSTGRES_USER: s4bridge_user
+      POSTGRES_PASSWORD: s4bridge_dev_password
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U s4bridge_user -d s4bridge"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongodb:
+    image: mongo:8.0
+    container_name: s4bridge-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: s4bridge
+    ports:
+      - "127.0.0.1:27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  mongodb_data:
